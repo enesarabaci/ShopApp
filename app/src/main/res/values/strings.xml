@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ShopApp</string>
+    <string name="main_fragment">Ana Sayfa</string>
+    <string name="categories">Kategoriler</string>
+    <string name="favorites">Favoriler</string>
+    <string name="cart">Sepetim</string>
+    <string name="profile">Hesabım</string>
+    <string name="confirm_basket">Sepeti Onayla</string>
+    <string name="add_to_basket">Sepete Ekle</string>
+</resources>
