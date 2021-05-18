@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/best_sellers"
+            android:checked="true"
+            android:title="@string/best_sellers" />
+        <item
+            android:id="@+id/increasing_price"
+            android:title="@string/increasing_price" />
+        <item
+            android:id="@+id/descending_price"
+            android:title="@string/descending_price" />
+
+    </group>
+</menu>
