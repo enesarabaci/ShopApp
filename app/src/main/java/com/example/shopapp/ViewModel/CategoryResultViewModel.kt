@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopapp.Model.QueryEvent
 import com.example.shopapp.Repo.Repository
 import com.example.shopapp.Resource
+import com.example.shopapp.Util.Util
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,13 +30,14 @@ class CategoryResultViewModel @Inject constructor(
     private val _favorites = MutableLiveData<ArrayList<String>>()
     val favorites: LiveData<ArrayList<String>> = _favorites
 
-    private var url: String? = null
+    private var page = 0
+    private var filtering = Util.BEST_SELLERS
 
     fun getCategoryResult(link: String) {
-        url = link
+        page++
         _data.value = QueryEvent.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            val resource = repo.searchProduct(link)
+            val resource = repo.searchProduct(link, page, filtering)
             when (resource) {
                 is Resource.Success -> {
                     _data.value = QueryEvent.Success(resource.data)
@@ -47,8 +49,13 @@ class CategoryResultViewModel @Inject constructor(
         }
     }
 
+    fun changeFilter(newFilter: String) {
+        filtering = newFilter
+        page = 0
+    }
+
     fun addToFavorites(link: String) {
-        auth.currentUser.email?.let { email ->
+        auth.currentUser?.email?.let { email ->
             db.collection("users").document(email).collection("favorites")
                 .add(hashMapOf("link" to link))
                 .addOnSuccessListener {
@@ -58,7 +65,7 @@ class CategoryResultViewModel @Inject constructor(
     }
 
     fun deleteFromFavorites(link: String) {
-        auth.currentUser.email?.let { email ->
+        auth.currentUser?.email?.let { email ->
             db.collection("users").document(email).collection("favorites")
                 .whereEqualTo("link", link)
                 .get()
@@ -72,7 +79,7 @@ class CategoryResultViewModel @Inject constructor(
     }
 
     fun getFavorites() {
-        auth.currentUser.email?.let { email ->
+        auth.currentUser?.email?.let { email ->
             val ff = ArrayList<String>()
             db.collection("users").document(email).collection("favorites")
                 .get().addOnSuccessListener {

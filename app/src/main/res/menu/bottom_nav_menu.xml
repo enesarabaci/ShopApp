@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_baseline_favorite_24"
         android:title="@string/favorites" />
     <item
-        android:id="@+id/cartFragment"
+        android:id="@+id/cartOrderFragment"
         android:icon="@drawable/ic_baseline_shopping_cart_24"
         android:title="@string/cart" />
     <item

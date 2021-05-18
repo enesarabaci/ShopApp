@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/mainBaseFragment">
-    <fragment
-        android:id="@+id/cartFragment"
-        android:name="com.example.shopapp.View.CartFragment"
-        android:label="CartFragment" />
     <fragment
         android:id="@+id/categoryFragment"
         android:name="com.example.shopapp.View.Category.CategoryFragment"
@@ -19,9 +14,21 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.shopapp.View.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainBaseFragment"
         android:name="com.example.shopapp.View.MainBase.MainBaseFragment"
         android:label="MainBaseFragment" />
+    <fragment
+        android:id="@+id/cartOrderFragment"
+        android:name="com.example.shopapp.View.CartOrder.CartOrderFragment"
+        android:label="CartOrderFragment" />
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.example.shopapp.View.OrdersFragment"
+        android:label="OrdersFragment" />
 </navigation>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.shopapp.R
 import com.example.shopapp.ViewModel.ProfileViewModel
 import com.example.shopapp.databinding.FragmentProfileBinding
@@ -29,13 +30,16 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 activity?.finish()
             }
         }
+        binding.fragmentProfileOrders.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToOrdersFragment())
+        }
 
         collectData()
     }
 
     private fun collectData() {
         viewModel.userName.observe(viewLifecycleOwner, {
-            binding.fragmentProfileUserName.text= it
+            binding.fragmentProfileUserName.text = it
         })
         viewModel.email.observe(viewLifecycleOwner, {
             binding.fragmentProfileEmail.text = it

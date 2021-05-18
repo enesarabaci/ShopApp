@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.shopapp.Adapter.ProductsRecyclerAdapter
 import com.example.shopapp.Model.Product
 import com.example.shopapp.Model.QueryEvent
@@ -50,6 +49,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         collectData()
         setupRecyclerView()
+
+
     }
 
     private fun collectData() {
@@ -73,7 +74,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-        viewModel.favorites.observe(viewLifecycleOwner, Observer {
+        viewModel.favorites.observe(viewLifecycleOwner, {
             recyclerAdapter.updateFavorites(it)
         })
     }
@@ -82,7 +83,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.fragmentMainRv.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = recyclerAdapter
-            setHasFixedSize(false)
+            //setHasFixedSize(false)
             isNestedScrollingEnabled = false
 
             

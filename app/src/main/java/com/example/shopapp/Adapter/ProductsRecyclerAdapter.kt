@@ -54,7 +54,7 @@ class ProductsRecyclerAdapter(private val productItem: Int) :
         onItemClickListener = listener
     }
 
-    override fun onBindViewHolder(holder: ProductsRecyclerAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentProduct = list.get(position)
         holder.apply {
             title.text = currentProduct.title
@@ -147,6 +147,15 @@ class ProductsRecyclerAdapter(private val productItem: Int) :
         favoriteProducts.clear()
         favoriteProducts.addAll(favorites)
         notifyDataSetChanged()
+    }
+
+    fun updateList(newList: List<Product>) {
+        val combineList = ArrayList<Product>()
+        combineList.apply {
+            addAll(list)
+            addAll(newList)
+        }
+        list = combineList
     }
 
 }

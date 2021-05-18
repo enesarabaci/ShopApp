@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopapp.Model.QueryEvent
 import com.example.shopapp.Repo.Repository
 import com.example.shopapp.Resource
+import com.example.shopapp.Util.Util.BEST_SELLERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,11 +29,15 @@ class SearchViewModel @Inject constructor(
     private val _favorites = MutableLiveData<List<String>>()
     val favorites: LiveData<List<String>> = _favorites
 
+    private var page = 0
+    private var filtering = BEST_SELLERS
+
     fun searchProduct(search: String) {
         _data.value = QueryEvent.Loading
+        page++
         viewModelScope.launch(Dispatchers.IO) {
             val searchTerm = "/arama/$search/"
-            val resource = repo.searchProduct(searchTerm)
+            val resource = repo.searchProduct(searchTerm, page, filtering)
 
             when (resource) {
                 is Resource.Success -> {
@@ -43,6 +48,11 @@ class SearchViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun changeFilter(newFilter: String) {
+        filtering = newFilter
+        page = 0
     }
 
     fun addToFavorites(link: String) {

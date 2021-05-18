@@ -9,6 +9,7 @@ import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class FirebaseQuery @Inject constructor(
     val auth: FirebaseAuth,
@@ -206,5 +207,78 @@ class FirebaseQuery @Inject constructor(
     }
 
     fun getEmail() : String = auth.currentUser?.email ?: ""
+
+    suspend fun saveOrder(order: Order) : String {
+        auth.currentUser?.email?.let { email ->
+            val data = HashMap<String, Any>()
+            order.apply {
+                data.put("city", city)
+                data.put("district", district)
+                data.put("neighborhood", neighborhood)
+                data.put("address", address)
+                data.put("cardNumber", cardNumber)
+                data.put("month", month)
+                data.put("year", year)
+                data.put("cvv", cvv)
+                data.put("price", price)
+                data.put("products", products)
+                data.put("status", "Yolda")
+                data.put("date", Timestamp.now())
+            }
+
+            db.collection("users")
+                .document(email)
+                .collection("orders")
+                .add(data)
+                .await()
+
+            val query = db.collection("users")
+                .document(email)
+                .collection("cart")
+
+            order.products.forEach {
+                val delete = query.whereEqualTo("link", it)
+                    .get()
+                    .await()
+
+                delete.documents.forEach {
+                    it.reference.delete()
+                }
+            }
+
+            return "Sipariş Kaydınız Oluşturuldu."
+        } ?: return "Error!"
+    }
+
+    suspend fun getOrders() : Resource<List<Order>> {
+        auth.currentUser?.email?.let { email->
+            val query = db.collection("users")
+                .document(email)
+                .collection("orders")
+                .get()
+                .await()
+
+            val result = ArrayList<Order>()
+
+            query.documents.forEach {
+                result.add(Order(
+                    it.get("city") as String,
+                    it.get("district") as String,
+                    it.get("neighborhood") as String,
+                    it.get("address") as String,
+                    it.get("cardNumber") as String,
+                    it.get("month") as String,
+                    it.get("year") as String,
+                    it.get("cvv") as String,
+                    (it.get("price") as Number).toInt(),
+                    it.get("products") as List<String>,
+                    it.get("date") as Timestamp,
+                    it.get("status") as String
+                ))
+            }
+
+            return Resource.Success(result)
+        } ?: return Resource.Message("Error!")
+    }
 
 }

@@ -7,10 +7,11 @@ import java.lang.Exception
 
 class DataRequest {
 
-    fun searchProduct(search: String): Resource<List<Product>> {
+    fun searchProduct(search: String, page: Int? = null, filtering: String? = null): Resource<List<Product>> {
         return try {
-            val url = "${Util.BASE_URL}$search"
+            val url = "${Util.BASE_URL}$search/?page=${page ?: 1}&${filtering ?: ""}"
             val doc = Jsoup.connect(url).get()
+            val priceData = doc.select("div.product-list").select("div.product-list--list-page")
             val data = doc.select("div.product-list__content")
             val image = doc.select("div.slider-img")
             var size = data.size
@@ -26,7 +27,8 @@ class DataRequest {
             val list = ArrayList<Product>()
 
             for (i in 0..size - 1) {
-                price = data.select("div.product-list__cost")
+                price = priceData.select("div.product-list__content")
+                    .select("div.product-list__cost")
                     .select("span.product-list__price")
                     .eq(i)
                     .text()
@@ -48,8 +50,9 @@ class DataRequest {
                         .eq(i)
                         .attr("href")
                 }"
-
-                list.add(Product(title, img, price, link, star = star))
+                if (title.isNotEmpty()) {
+                    list.add(Product(title, img, price, link, star = star))
+                }
             }
 
             Resource.Success(list.toList())
@@ -102,7 +105,7 @@ class DataRequest {
         }
     }
 
-    suspend fun getCartProducts(
+    fun getCartProducts(
         links: ArrayList<String>,
         counts: ArrayList<Int>
     ): Resource<List<Product>> {

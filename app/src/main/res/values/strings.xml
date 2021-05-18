@@ -6,5 +6,9 @@
     <string name="cart">Sepetim</string>
     <string name="profile">Hesabım</string>
     <string name="confirm_basket">Sepeti Onayla</string>
+    <string name="confirm_order">Onayla ve Bitir</string>
     <string name="add_to_basket">Sepete Ekle</string>
+    <string name="best_sellers">En Çok Satanlar</string>
+    <string name="increasing_price">Fiyata Göre Artan</string>
+    <string name="descending_price">Fiyata Göre Azalan</string>
 </resources>

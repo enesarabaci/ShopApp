@@ -2,6 +2,7 @@ package com.example.shopapp.Repo
 
 import com.example.shopapp.Model.DataRequest
 import com.example.shopapp.Model.FirebaseQuery
+import com.example.shopapp.Model.Order
 import com.example.shopapp.Model.Product
 import com.example.shopapp.Resource
 import javax.inject.Inject
@@ -11,10 +12,10 @@ class Repository @Inject constructor(
     private val firebaseQuery: FirebaseQuery
 ) {
 
-    suspend fun searchProduct(search: String): Resource<List<Product>> =
-        dataRequest.searchProduct(search)
+    fun searchProduct(search: String, page: Int? = null, filtering: String? = null): Resource<List<Product>> =
+        dataRequest.searchProduct(search, page, filtering)
 
-    suspend fun getOpportunityProducts(): Resource<List<Product>> =
+    fun getOpportunityProducts(): Resource<List<Product>> =
         dataRequest.getOpportunityProducts()
 
     suspend fun getFavoriteProducts(): Resource<List<Product>> =
@@ -37,7 +38,7 @@ class Repository @Inject constructor(
     suspend fun getCartProducts(): Resource<List<Product>> =
         firebaseQuery.getCartProducts()
 
-    suspend fun getProductDetail(link: String): Resource<Product> =
+    fun getProductDetail(link: String): Resource<Product> =
         dataRequest.getProductDetail(link)
 
     suspend fun sendComment(comment: String, link: String) =
@@ -48,5 +49,11 @@ class Repository @Inject constructor(
     suspend fun getUserName() = firebaseQuery.getUserName()
 
     fun getEmail() = firebaseQuery.getEmail()
+
+    suspend fun saveOrder(order: Order) = firebaseQuery.saveOrder(
+        order
+    )
+
+    suspend fun getOrders() = firebaseQuery.getOrders()
 
 }

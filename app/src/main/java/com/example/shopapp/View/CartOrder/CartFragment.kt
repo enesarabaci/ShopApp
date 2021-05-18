@@ -1,4 +1,4 @@
-package com.example.shopapp.View
+package com.example.shopapp.View.CartOrder
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.example.shopapp.Adapter.CartRecyclerAdapter
 import com.example.shopapp.Model.Product
 import com.example.shopapp.Model.QueryEvent
 import com.example.shopapp.R
+import com.example.shopapp.View.ProductDetailActivity
 import com.example.shopapp.ViewModel.CartViewModel
 import com.example.shopapp.databinding.FragmentCartBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +28,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
     private lateinit var binding: FragmentCartBinding
     private val viewModel: CartViewModel by viewModels()
     private val recyclerAdapter = CartRecyclerAdapter()
+    private var totalPrice = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentCartBinding.bind(view)
@@ -33,6 +36,18 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
 
         collectData()
         setupRecyclerView()
+
+        binding.fragmentCartConfirm.setOnClickListener {
+            if (totalPrice > 0) {
+                val links = ArrayList<String>()
+                recyclerAdapter.list.forEach {
+                    if (it.checked) {
+                        links.add(it.link)
+                    }
+                }
+                findNavController().navigate(CartFragmentDirections.actionCartFragmentToOrderFragment(links.toTypedArray(), totalPrice))
+            }
+        }
     }
 
     override fun onResume() {
@@ -62,8 +77,9 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                 }
             }
         }
-        viewModel.total.observe(viewLifecycleOwner, Observer {
-            binding.fragmentCartTotalPrice.text = "$it TL"
+        viewModel.total.observe(viewLifecycleOwner, {
+            totalPrice = it
+            binding.fragmentCartTotalPrice.text = "$totalPrice TL"
         })
     }
 
