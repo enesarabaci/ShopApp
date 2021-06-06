@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -81,6 +80,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                             binding.fragmentSearchText.clearFocus()
                             searchTerm = it.text.toString()
                             recyclerAdapter.list = listOf()
+                            viewModel.page = 0
                             viewModel.searchProduct(searchTerm)
                         }
                     }
@@ -97,10 +97,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     }
                 }
                 super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
             }
         })
 

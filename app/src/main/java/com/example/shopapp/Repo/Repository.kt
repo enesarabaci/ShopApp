@@ -1,9 +1,6 @@
 package com.example.shopapp.Repo
 
-import com.example.shopapp.Model.DataRequest
-import com.example.shopapp.Model.FirebaseQuery
-import com.example.shopapp.Model.Order
-import com.example.shopapp.Model.Product
+import com.example.shopapp.Model.*
 import com.example.shopapp.Resource
 import javax.inject.Inject
 
@@ -56,4 +53,11 @@ class Repository @Inject constructor(
 
     suspend fun getOrders() = firebaseQuery.getOrders()
 
+    suspend fun saveAddress(address: Address) = firebaseQuery.saveAddress(address)
+
+    suspend fun saveNumber(number: String) = firebaseQuery.saveNumber(number)
+
+    suspend fun getAddress() = firebaseQuery.getAddress()
+
+    suspend fun getNumber() = firebaseQuery.getNumber()
 }

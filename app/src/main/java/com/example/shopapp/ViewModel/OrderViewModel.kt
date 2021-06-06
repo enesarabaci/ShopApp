@@ -20,10 +20,10 @@ class OrderViewModel @Inject constructor(private val repo: Repository) : ViewMod
 
     fun confirmOrder(order: Order) {
         if (
-            order.city.isEmpty() ||
-            order.district.isEmpty() ||
-            order.neighborhood.isEmpty() ||
-            order.address.isEmpty() ||
+            order.address.city.isEmpty() ||
+            order.address.district.isEmpty() ||
+            order.address.neighborhood.isEmpty() ||
+            order.address.address.isEmpty() ||
             order.cardNumber.isEmpty() ||
             order.month.isEmpty() ||
             order.year.isEmpty() ||

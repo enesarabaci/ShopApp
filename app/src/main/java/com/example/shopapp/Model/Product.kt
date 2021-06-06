@@ -1,6 +1,6 @@
 package com.example.shopapp.Model
 
-data class Product(
+class Product(
     var title: String,
     var img: String,
     var price: String,

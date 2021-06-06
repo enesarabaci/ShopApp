@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.shopapp.Model.Address
 import com.example.shopapp.Model.Order
 import com.example.shopapp.Model.QueryEvent
 import com.example.shopapp.R
@@ -52,10 +53,12 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
             binding.apply {
                 viewModel.confirmOrder(
                     Order(
-                    fragmentOrderCity.text.toString(),
-                    fragmentOrderDistrict.text.toString(),
-                    fragmentOrderNeighborhood.text.toString(),
-                    fragmentOrderAddress.text.toString(),
+                        Address(
+                            fragmentOrderCity.text.toString(),
+                            fragmentOrderDistrict.text.toString(),
+                            fragmentOrderNeighborhood.text.toString(),
+                            fragmentOrderAddress.text.toString()
+                        ),
                     fragmentOrderCardNumber.text.toString(),
                     fragmentOrderMonth.text.toString(),
                     fragmentOrderYear.text.toString(),

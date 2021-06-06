@@ -212,9 +212,9 @@ class FirebaseQuery @Inject constructor(
         auth.currentUser?.email?.let { email ->
             val data = HashMap<String, Any>()
             order.apply {
-                data.put("city", city)
-                data.put("district", district)
-                data.put("neighborhood", neighborhood)
+                data.put("city", address.city)
+                data.put("district", address.district)
+                data.put("neighborhood", address.neighborhood)
                 data.put("address", address)
                 data.put("cardNumber", cardNumber)
                 data.put("month", month)
@@ -262,10 +262,11 @@ class FirebaseQuery @Inject constructor(
 
             query.documents.forEach {
                 result.add(Order(
-                    it.get("city") as String,
-                    it.get("district") as String,
-                    it.get("neighborhood") as String,
-                    it.get("address") as String,
+                    Address(it.get("city") as String,
+                        it.get("district") as String,
+                        it.get("neighborhood") as String,
+                        it.get("address") as String,
+                        ),
                     it.get("cardNumber") as String,
                     it.get("month") as String,
                     it.get("year") as String,
@@ -279,6 +280,59 @@ class FirebaseQuery @Inject constructor(
 
             return Resource.Success(result)
         } ?: return Resource.Message("Error!")
+    }
+
+    suspend fun saveNumber(number: String) : String {
+        auth.currentUser?.email?.let { email ->
+            db.collection("users")
+                .document(email)
+                .update("number", number)
+                .await()
+        }
+        return getNumber()
+    }
+
+    suspend fun saveAddress(address: Address) : Address {
+        auth.currentUser?.email?.let { email ->
+            val addressMap = hashMapOf("city" to address.city, "district" to address.district, "neighborhood" to address.neighborhood, "address" to address.address)
+            db.collection("users")
+                .document(email)
+                .update("address", addressMap)
+                .await()
+        }
+        return getAddress()
+    }
+
+    suspend fun getAddress() : Address {
+        return auth.currentUser?.email?.let { email ->
+            val ds = db.collection("users")
+                .document(email)
+                .get()
+                .await()
+            var result: HashMap<String, String>? = null
+            if (ds.get("address") != null) {
+                result = ds.get("address") as HashMap<String, String>
+            }
+            Address(
+                result?.get("city") ?: "",
+                result?.get("district") ?: "",
+                result?.get("neighborhood") ?: "",
+                result?.get("address") ?: ""
+            )
+        } ?: Address("", "", "", "")
+    }
+
+    suspend fun getNumber() : String {
+        return auth.currentUser?.email?.let { email ->
+            val ds = db.collection("users")
+                .document(email)
+                .get()
+                .await()
+            val result = ds.get("number")
+            result?.let {
+                result as String
+            } ?: ""
+        } ?: ""
     }
 
 }

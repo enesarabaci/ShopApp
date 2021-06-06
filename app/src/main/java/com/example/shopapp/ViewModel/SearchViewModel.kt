@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
     private val _favorites = MutableLiveData<List<String>>()
     val favorites: LiveData<List<String>> = _favorites
 
-    private var page = 0
+    var page = 0
     private var filtering = BEST_SELLERS
 
     fun searchProduct(search: String) {
