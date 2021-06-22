@@ -1,6 +1,6 @@
 package com.example.shopapp.Adapter
 
-import android.graphics.Color
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +32,7 @@ class FavoritesRecyclerAdapter : RecyclerView.Adapter<FavoritesRecyclerAdapter.V
             return oldItem.link == newItem.link
         }
 
+        @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
             return oldItem == newItem
         }

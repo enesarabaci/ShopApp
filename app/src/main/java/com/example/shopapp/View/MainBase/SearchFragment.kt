@@ -29,27 +29,36 @@ import com.example.shopapp.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
+import java.lang.Exception
 
 @AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
-    private val viewModel: SearchViewModel by viewModels()
-    private val recyclerAdapter = ProductsRecyclerAdapter(R.layout.product_item)
+    lateinit var viewModel: SearchViewModel
+    private val searchViewModel: SearchViewModel by viewModels()
+    val recyclerAdapter = ProductsRecyclerAdapter(R.layout.product_item)
     private var searchTerm = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = searchViewModel
+
         val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
 
+
         (activity as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbarSearchFragment)
-            setupActionBarWithNavController(findNavController(R.id.fragment_main))
+            try {
+                setupActionBarWithNavController(findNavController(R.id.fragment_main))
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.localizedMessage ?: "Error!", Toast.LENGTH_SHORT).show()
+            }
         }
         setHasOptionsMenu(true)
 

@@ -29,14 +29,17 @@ import kotlinx.coroutines.launch
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     private lateinit var binding: FragmentFavoritesBinding
-    private val viewModel: FavoritesViewModel by viewModels()
-    private val recyclerAdapter = FavoritesRecyclerAdapter()
+    lateinit var viewModel: FavoritesViewModel
+    private val favoritesViewModel: FavoritesViewModel by viewModels()
+    var recyclerAdapter = FavoritesRecyclerAdapter()
     private var job: Job? = null
     private val result = ArrayList<Product>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentFavoritesBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel  = favoritesViewModel
 
         setupRecyclerView()
         collectData()

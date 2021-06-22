@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopapp.Model.Comment
 import com.example.shopapp.Model.Product
 import com.example.shopapp.Model.QueryEvent
-import com.example.shopapp.Repo.Repository
+import com.example.shopapp.Repo.RepositoryInterface
 import com.example.shopapp.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductDetailViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
+class ProductDetailViewModel @Inject constructor(private val repo: RepositoryInterface) : ViewModel() {
 
     private val _data = MutableStateFlow<QueryEvent>(QueryEvent.Empty)
     val data: StateFlow<QueryEvent> = _data

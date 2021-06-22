@@ -27,33 +27,42 @@ import com.example.shopapp.ViewModel.CategoryResultViewModel
 import com.example.shopapp.databinding.FragmentCategoryResultBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import java.lang.Exception
 
 @AndroidEntryPoint
 class CategoryResultFragment : Fragment(R.layout.fragment_category_result) {
 
     private lateinit var binding: FragmentCategoryResultBinding
     private val args: CategoryResultFragmentArgs by navArgs()
-    private val recyclerAdapter = ProductsRecyclerAdapter(R.layout.product_item)
-    private val viewModel: CategoryResultViewModel by viewModels()
+    val recyclerAdapter = ProductsRecyclerAdapter(R.layout.product_item)
+    lateinit var viewModel: CategoryResultViewModel
+    private val categoryResultViewModel: CategoryResultViewModel by viewModels()
     private var link = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentCategoryResultBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = categoryResultViewModel
+        try {
+            link = args.link
+            binding.toolbarCategoryResultFragment.title = args.title
+        }catch (e: Exception) {
+            Toast.makeText(requireContext(), e.localizedMessage ?: "Error!", Toast.LENGTH_SHORT).show()
+        }
+
         (activity as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbarCategoryResultFragment)
-            setupActionBarWithNavController(findNavController(R.id.fragment_category))
+            try {
+                setupActionBarWithNavController(findNavController(R.id.fragment_category))
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.localizedMessage ?: "Error!", Toast.LENGTH_SHORT).show()
+            }
         }
         setHasOptionsMenu(true)
 
         binding.apply {
-            toolbarCategoryResultFragment.setNavigationOnClickListener(object :
-                View.OnClickListener {
-                override fun onClick(p0: View?) {
-                    activity?.onBackPressed()
-                }
-            })
+            toolbarCategoryResultFragment.setNavigationOnClickListener { activity?.onBackPressed() }
         }
 
         viewModel.getFavorites()
@@ -61,9 +70,7 @@ class CategoryResultFragment : Fragment(R.layout.fragment_category_result) {
         collectData()
         setupRecylcerView()
 
-        link = args.link
 
-        binding.toolbarCategoryResultFragment.title = args.title
         viewModel.getCategoryResult(link)
 
         binding.fragmentCategoryResultRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopapp.Model.Order
 import com.example.shopapp.Model.QueryEvent
-import com.example.shopapp.Repo.Repository
+import com.example.shopapp.Repo.RepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OrderViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
+class OrderViewModel @Inject constructor(private val repo: RepositoryInterface) : ViewModel() {
 
     private val _result = MutableStateFlow<QueryEvent>(QueryEvent.Empty)
     val result: StateFlow<QueryEvent> = _result

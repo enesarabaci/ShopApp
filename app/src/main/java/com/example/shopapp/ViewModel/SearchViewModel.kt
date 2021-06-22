@@ -5,11 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopapp.Model.QueryEvent
-import com.example.shopapp.Repo.Repository
+import com.example.shopapp.Repo.RepositoryInterface
 import com.example.shopapp.Resource
 import com.example.shopapp.Util.Util.BEST_SELLERS
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,9 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    val repo: Repository,
-    val db: FirebaseFirestore,
-    val auth: FirebaseAuth
+    val repo: RepositoryInterface
 ) : ViewModel() {
 
     private val _data = MutableStateFlow<QueryEvent>(QueryEvent.Empty)

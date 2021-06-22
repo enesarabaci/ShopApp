@@ -3,6 +3,7 @@ package com.example.shopapp.DependencyInjection
 import com.example.shopapp.Model.DataRequest
 import com.example.shopapp.Model.FirebaseQuery
 import com.example.shopapp.Repo.Repository
+import com.example.shopapp.Repo.RepositoryInterface
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -34,7 +35,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun getRepo(dataRequest: DataRequest, firebaseQuery: FirebaseQuery) =
-        Repository(dataRequest, firebaseQuery)
+    fun getRepo(dataRequest: DataRequest, firebaseQuery: FirebaseQuery, auth: FirebaseAuth) : RepositoryInterface =
+        Repository(dataRequest, firebaseQuery, auth)
 
 }

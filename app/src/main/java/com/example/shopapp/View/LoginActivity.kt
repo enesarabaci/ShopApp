@@ -17,12 +17,15 @@ import kotlinx.coroutines.flow.collect
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private val viewModel: LoginViewModel by viewModels()
+    lateinit var viewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = loginViewModel
 
         lifecycleScope.launchWhenCreated {
             viewModel.result.collect { entryEvent ->

@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,16 +27,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var binding: FragmentMainBinding
     private val viewModel: MainViewModel by viewModels()
     private val recyclerAdapter = ProductsRecyclerAdapter(R.layout.product_item)
+    lateinit var extras: FragmentNavigator.Extras
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentMainBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
+        extras = FragmentNavigatorExtras(binding.fragmentMainBaseSearch to "search_second")
+
         binding.apply {
             fragmentMainBaseSearch.setOnClickListener {
-                val extras =
-                    FragmentNavigatorExtras(binding.fragmentMainBaseSearch to "search_second")
-
                 findNavController().navigate(
                     R.id.action_mainFragment_to_searchFragment,
                     null,
@@ -83,10 +83,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.fragmentMainRv.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = recyclerAdapter
-            //setHasFixedSize(false)
             isNestedScrollingEnabled = false
-
-            
         }
         recyclerAdapter.setOnFavoriteClickListener { link, add ->
             if (add) {

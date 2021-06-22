@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopapp.Model.Product
 import com.example.shopapp.Model.QueryEvent
-import com.example.shopapp.Repo.Repository
+import com.example.shopapp.Repo.RepositoryInterface
 import com.example.shopapp.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,13 +19,13 @@ import kotlin.collections.ArrayList
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val repo: Repository
+    private val repo: RepositoryInterface
 ) : ViewModel() {
 
     private val _data = MutableStateFlow<QueryEvent>(QueryEvent.Empty)
     val data: StateFlow<QueryEvent> = _data
 
-    private val _message = MutableLiveData<String>("")
+    private val _message = MutableLiveData("")
     val message: LiveData<String> = _message
 
     var search = ""

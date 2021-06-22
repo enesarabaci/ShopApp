@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -26,13 +25,16 @@ import kotlinx.coroutines.flow.collect
 class CartFragment : Fragment(R.layout.fragment_cart) {
 
     private lateinit var binding: FragmentCartBinding
-    private val viewModel: CartViewModel by viewModels()
-    private val recyclerAdapter = CartRecyclerAdapter()
-    private var totalPrice = 0
+    lateinit var viewModel: CartViewModel
+    private val cartViewModel: CartViewModel by viewModels()
+    var recyclerAdapter = CartRecyclerAdapter()
+    var totalPrice = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentCartBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = cartViewModel
 
         collectData()
         setupRecyclerView()

@@ -2,62 +2,183 @@ package com.example.shopapp.Repo
 
 import com.example.shopapp.Model.*
 import com.example.shopapp.Resource
+import com.google.firebase.auth.FirebaseAuth
+import java.lang.Exception
 import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val dataRequest: DataRequest,
-    private val firebaseQuery: FirebaseQuery
-) {
+    private val firebaseQuery: FirebaseQuery,
+    private val auth: FirebaseAuth
+) : RepositoryInterface {
 
-    fun searchProduct(search: String, page: Int? = null, filtering: String? = null): Resource<List<Product>> =
-        dataRequest.searchProduct(search, page, filtering)
+    override suspend fun searchProduct(search: String, page: Int?, filtering: String?): Resource<List<Product>> {
+        val result = checker { email ->
+            dataRequest.searchProduct(search, page, filtering)
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    fun getOpportunityProducts(): Resource<List<Product>> =
-        dataRequest.getOpportunityProducts()
+    override suspend fun getOpportunityProducts(): Resource<List<Product>> {
+        val result = checker { email ->
+            dataRequest.getOpportunityProducts()
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    suspend fun getFavoriteProducts(): Resource<List<Product>> =
-        firebaseQuery.getFavorites()
+    override suspend fun getFavoriteProducts(): Resource<List<Product>> {
+        val result = checker { email ->
+            firebaseQuery.getFavorites(email)
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    suspend fun getFavoriteLinks(): Resource<List<String>> =
-        firebaseQuery.getFavoriteLinks()
+    override suspend fun getFavoriteLinks(): Resource<List<String>> {
+        val result = checker { email ->
+            firebaseQuery.getFavoriteLinks(email)
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    suspend fun deleteFavoriteProduct(link: String) = firebaseQuery.deleteFavoriteProduct(link)
+    override suspend fun deleteFavoriteProduct(link: String) {
+        checker { email ->
+            firebaseQuery.deleteFavoriteProduct(link, email)
+        }
+    }
 
-    suspend fun addFavoriteProduct(link: String) = firebaseQuery.addFavoriteProduct(link)
+    override suspend fun addFavoriteProduct(link: String) {
+        checker { email ->
+            firebaseQuery.addFavoriteProduct(link, email)
+        }
+    }
 
-    suspend fun deleteCartProduct(link: String) = firebaseQuery.deleteCartProduct(link)
+    override suspend fun deleteCartProduct(link: String) {
+        checker { email ->
+            firebaseQuery.deleteCartProduct(link, email)
+        }
+    }
 
-    suspend fun addToCart(link: String): String =
-        firebaseQuery.addToCart(link)
+    override suspend fun addToCart(link: String): String {
+        val result = checker { email ->
+            firebaseQuery.addToCart(link, email)
+        }
+        return result.data ?: result.message ?: "Error!"
+    }
 
-    suspend fun updateCount(link: String, count: Int) = firebaseQuery.updateCount(link, count)
+    override suspend fun updateCount(link: String, count: Int) {
+        checker { email ->
+            firebaseQuery.updateCount(link, count, email)
+        }
+    }
 
-    suspend fun getCartProducts(): Resource<List<Product>> =
-        firebaseQuery.getCartProducts()
+    override suspend fun getCartProducts(): Resource<List<Product>> {
+        val result = checker { email ->
+            firebaseQuery.getCartProducts(email)
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    fun getProductDetail(link: String): Resource<Product> =
-        dataRequest.getProductDetail(link)
+    override suspend fun getProductDetail(link: String): Resource<Product> {
+        val result = checker { email ->
+            dataRequest.getProductDetail(link)
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    suspend fun sendComment(comment: String, link: String) =
-        firebaseQuery.sendComment(comment, link)
+    override suspend fun sendComment(comment: String, link: String) : String {
+        val result = checker { email ->
+            firebaseQuery.sendComment(comment, link, email)
+        }
+        return result.data ?: result.message ?: "Error!"
+    }
 
-    suspend fun getComments(link: String) = firebaseQuery.getComments(link)
+    override suspend fun getComments(link: String) : List<Comment> {
+        val result = checker { email ->
+            firebaseQuery.getComments(link)
+        }
+        return result.data ?: arrayListOf()
+    }
 
-    suspend fun getUserName() = firebaseQuery.getUserName()
+    override suspend fun getUserName() : String {
+        val result = checker { email ->
+            firebaseQuery.getUserName(email)
+        }
+        return result.data ?: result.message ?: "Error!"
+    }
 
-    fun getEmail() = firebaseQuery.getEmail()
+    override fun getEmail() = firebaseQuery.getEmail()
 
-    suspend fun saveOrder(order: Order) = firebaseQuery.saveOrder(
-        order
-    )
+    override suspend fun createUser(email: String, password: String, firstName: String, lastName: String) : EntryEvent {
+        return try {
+            firebaseQuery.createUser(email, password, firstName, lastName)
+        }catch (e: Exception) {
+            EntryEvent.Error(e.localizedMessage ?: "Error!")
+        }
+    }
 
-    suspend fun getOrders() = firebaseQuery.getOrders()
+    override suspend fun loginUser(email: String, password: String): EntryEvent {
+        return try {
+            firebaseQuery.loginUser(email, password)
+        }catch (e: Exception) {
+            EntryEvent.Error(e.localizedMessage ?: "Error!")
+        }
+    }
 
-    suspend fun saveAddress(address: Address) = firebaseQuery.saveAddress(address)
+    override suspend fun saveOrder(order: Order) : String {
+        val result = checker { email ->
+            firebaseQuery.saveOrder(order, email)
+        }
+        return result.data ?: result.message ?: "Error!"
+    }
 
-    suspend fun saveNumber(number: String) = firebaseQuery.saveNumber(number)
+    override suspend fun getOrders() : Resource<List<Order>> {
+        val result = checker { email ->
+            firebaseQuery.getOrders(email)
+        }
+        return result.data ?: Resource.Message(result.message ?: "Error!")
+    }
 
-    suspend fun getAddress() = firebaseQuery.getAddress()
+    override suspend fun saveAddress(address: Address) : Address {
+        val result = checker { email ->
+            firebaseQuery.saveAddress(address, email)
+        }
+        return result.data ?: Address("", "", "", "")
+    }
 
-    suspend fun getNumber() = firebaseQuery.getNumber()
+    override suspend fun saveNumber(number: String) : String {
+        val result = checker { email ->
+            firebaseQuery.saveNumber(number, email)
+        }
+        return result.data ?: ""
+    }
+
+    override suspend fun getAddress() : Address {
+        val result = checker { email ->
+            firebaseQuery.getAddress(email)
+        }
+        return result.data ?: Address("", "", "", "")
+    }
+
+    override suspend fun getNumber() : String {
+        val result = checker { email ->
+            firebaseQuery.getNumber(email)
+        }
+        return result.data ?: ""
+    }
+
+    suspend fun <T> checker(listener: suspend (String) -> (T)) : CheckerClass<T> {
+        return auth.currentUser?.email?.let { email ->
+            try {
+                CheckerClass.Success(listener.invoke(email))
+            }catch (e: Exception) {
+                CheckerClass.Error(e.localizedMessage ?: "Error!")
+            }
+        } ?: CheckerClass.Error("Error!")
+    }
+
+}
+
+sealed class CheckerClass<T>(val data:T? = null, val message:String? = null) {
+    class Success<T>(data:T) : CheckerClass<T>(data = data)
+    class Error<T>(message:String) : CheckerClass<T>(message = message)
 }

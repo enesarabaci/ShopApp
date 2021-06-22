@@ -22,17 +22,26 @@ import kotlinx.coroutines.flow.collect
 @AndroidEntryPoint
 class OrderFragment : Fragment(R.layout.fragment_order) {
 
-    private val viewModel: OrderViewModel by viewModels()
+    lateinit var viewModel: OrderViewModel
+    private val orderViewModel: OrderViewModel by viewModels()
     private lateinit var binding: FragmentOrderBinding
     private val args: OrderFragmentArgs by navArgs()
+    private var price = 0
+    private var links = emptyArray<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentOrderBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = orderViewModel
+
         (activity as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbarOrderFragment)
-            setupActionBarWithNavController(findNavController(R.id.fragment_cart_order))
+            try {
+                setupActionBarWithNavController(findNavController(R.id.fragment_cart_order))
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.localizedMessage ?: "Error!", Toast.LENGTH_SHORT).show()
+            }
         }
         setHasOptionsMenu(true)
         binding.toolbarOrderFragment.title = "Siparişi Onayla"
@@ -47,7 +56,14 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         collectData()
 
-        binding.fragmentOrderTotalPrice.text = "${args.price} TL"
+        try {
+            price = args.price
+            links = args.links
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), e.localizedMessage ?: "Error!", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.fragmentOrderTotalPrice.text = "$price TL"
 
         binding.fragmentOrderConfirm.setOnClickListener {
             binding.apply {
@@ -63,8 +79,8 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
                     fragmentOrderMonth.text.toString(),
                     fragmentOrderYear.text.toString(),
                     fragmentOrderCvv.text.toString(),
-                    args.price,
-                    args.links.toList()
+                    price,
+                    links.toList()
                     )
                 )
             }

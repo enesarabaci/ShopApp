@@ -16,12 +16,15 @@ import kotlinx.coroutines.flow.collect
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private val viewModel: RegisterViewModel by viewModels()
+    lateinit var viewModel: RegisterViewModel
+    private val registerViewModel: RegisterViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = registerViewModel
 
         setSupportActionBar(binding.toolbarRegister)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
